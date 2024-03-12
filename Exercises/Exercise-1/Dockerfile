@@ -1,6 +1,6 @@
 FROM python:latest
 
-WORKDIR app
-COPY . /app
+WORKDIR /app
+COPY . .
 
-RUN python3 -m pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
