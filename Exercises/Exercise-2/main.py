@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import glob
+from scripts.save_content import save_url_content
 
 
 def main():
@@ -26,21 +27,6 @@ def main():
             if SEARCH_DATE in [ele.text.strip() for ele in cols]:    
                 url_prep = f"{URL}" + row.find('a').get('href')
                 download_url.append(url_prep)
-        
-
-    def load_file(url: str, timeout: int = 20):
-        # Get HTTP headers information
-        response = requests.head(url=url)
-        # Form a file name by url and path to this file
-        file_name = url.rsplit('/', 1)[1]
-        file_path = f"{FILE_FOLDER}{file_name}"
-
-        # Check url state code
-        if response.status_code == 200:
-            # Download content into file
-            content = requests.get(url=url, allow_redirects=True, timeout=timeout)
-            open(file_path, 'wb').write(content.content)
-            print(file_name + ' was downloaded.')
 
 
     def calculation(dfs: list):
@@ -59,18 +45,22 @@ def main():
     download_url = []
     dfs = []
 
-    # Get data about urls
-    preparing_url(download_url)
-        
-    # Save files localy
-    for url in download_url:
-        load_file(url=url)
+    try:
+        # Get data about URLs
+        preparing_url(download_url)
+            
+        # Save files localy
+        for url in download_url:
+            file_path = save_url_content(url=url, target_folder=FILE_FOLDER)
+            print('Downloaded file: ' + file_path)
 
-    # Prepare aggregating data
-    calculation(dfs)
-        
-    # Print highest value by HourlyDryBulbTemperature
-    print(max(dfs))
+        # Prepare aggregation data
+        calculation(dfs)
+            
+        # Print highest value by HourlyDryBulbTemperature
+        print(max(dfs))
+    except:
+        print('Error occured.')
 
 
 if __name__ == "__main__":
