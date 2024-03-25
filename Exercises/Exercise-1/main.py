@@ -1,5 +1,4 @@
 import os
-import requests
 from zipfile import ZipFile
 import concurrent.futures
 from scripts.save_content import save_url_content
