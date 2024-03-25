@@ -1,10 +1,14 @@
 import requests
 
 
-# Retrieve URL contents
 def save_url_content(url, target_folder, timeout=20):
-    # Pass the url, filename & path
+    '''
+        Retrieve URL contents.
+        Pass the url, filename & path.
+    '''
+    # Get HTTP headers information
     response = requests.head(url=url)
+    # Form a file name by url and path to this file
     file_name = url.rsplit('/', 1)[1] 
     file_path = f"{target_folder}/{file_name}"
 
