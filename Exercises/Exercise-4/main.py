@@ -1,10 +1,12 @@
+import os
 import pathlib
 import json
-import os
 
 
 def main():
+    # Set root directory path where finding files
     data_path = pathlib.Path("data")
+    # Identify all json files
     json_files = list(data_path.rglob("*.json"))
 
 
@@ -37,37 +39,40 @@ def main():
     
 
     def write_csv(file: str, data: dict) -> bool:
+        # Generate path and name for new csv file
         file_name, file_extension = os.path.splitext(file)
         csv_file_name = f"{file_name}.csv"
 
         # Define csv columns in a list
         csv_columns = data.keys()
-        # Generate the first row of csv
+        # Generate the header of csv
         csv_data = ",".join(csv_columns) + "\n"
-        print(csv_data)
  
-
+        # Define csv rows in a list
         csv_rows = list()
         for col in csv_columns:
             csv_rows.append(str(data[col]))
         
+        # Final defined data for csv file
         csv_data += ",".join(csv_rows) + "\n"       
 
+        # Write data into csv file
         try:
             with open(csv_file_name, "w+") as f:
                 f.write(csv_data)
         except:
-            raise Exception(f"Saving data to [{csv_file_name}] encountered an error.")
-        
-        print(csv_data)
+            raise Exception(f"Saving data to [{csv_file_name}] encountered an error.")        
 
 
-    #
+    # Main execution
     for file in json_files:
+        # Read json file
         json_data = read_json(file=file)
+        # Flatten json data
         flatten_json_file = flatten_json(data=json_data)
+        # Write into csv file
         write_csv(file=file, data=flatten_json_file)
-        print(f"File = [{file}]")
+        print(f"File [{file}] was processed")
   
 
 
